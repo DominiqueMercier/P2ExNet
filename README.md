@@ -7,4 +7,4 @@ https://arxiv.org/abs/2005.02006
 
 ## Usage
 
-Use the bash script to run the complete pipeline. Detailed information abbout each flag is givne in the main.py file.
+Use the bash script to run the complete pipeline. Detailed information about each flag is given in the main.py file.
