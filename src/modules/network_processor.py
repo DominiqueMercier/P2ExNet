@@ -661,7 +661,7 @@ def produce_build(options, dataset_dict, network_dict, sidx_dict, actual_n_proto
                 pidx, options.n_prototypes), network_dict['start'], network_dict['jump_size'],
             network_dict['rf_size'], options.patch_size, dataset_dict['input_width'])
         tmp_img = true_prototype_imgs[pidx if not options.full_build else get_proto(
-            pidx)]
+            pidx, options.n_prototypes)]
         # adjust prototype
         if options.same_scale:
             part = sidx_dict['sidx_x'][s:tmp_img.shape[0] + s, :]
@@ -695,7 +695,7 @@ def produce_build(options, dataset_dict, network_dict, sidx_dict, actual_n_proto
             sidx_dict['sidx_build_se_list'].append([s, s+end-1])
             sidx_dict['sidx_build_replaced'].add(pidx)
             sidx_dict['sidx_build_dif'] += int(
-                100 * sidx_dict['sidx_dist'][pidx if not options.full_build else get_proto(pidx)])/100
+                100 * sidx_dict['sidx_dist'][pidx if not options.full_build else get_proto(pidx, options.n_prototypes)])/100
             sidx_dict['sidx_build_set'] -= range_set
     return prototype_adjusted_imgs
 

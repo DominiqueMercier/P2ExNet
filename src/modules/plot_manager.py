@@ -165,6 +165,9 @@ def plot_class_distribution_full(options, dataset_dict, network_dict, sidx_dict)
     """
     from modules.network_processor import get_se
 
+    sidx_probabilites = sidx_dict['sidx_w'] * \
+        np.transpose(sidx_dict['w_squeeze'], [1, 0])
+
     sidx_probabilites = np.reshape(
         sidx_probabilites, [dataset_dict['n_classes'], network_dict['n_patches'], options.n_prototypes])
 
@@ -179,7 +182,7 @@ def plot_class_distribution_full(options, dataset_dict, network_dict, sidx_dict)
 
     cm = plt.get_cmap('tab20')
     cNorm = matplotlib.colors.Normalize(
-        vmin=0, vmax=patch_classes)
+        vmin=0, vmax=dataset_dict['n_classes']-1)
     scalarMap = matplotlib.cm.ScalarMappable(
         norm=cNorm, cmap=cm)
 
@@ -200,7 +203,7 @@ def plot_class_distribution_full(options, dataset_dict, network_dict, sidx_dict)
         if i_real < data.shape[1] and i % 2 == 0:
             ax_flat[i].plot(sidx_dict['sidx_x'])
             se = get_se(
-                i_real, network_dict['start'], network_dict['jump_size'], network_dict['rf_size'], dataset_dict['input_width'])
+                i_real, network_dict['start'], network_dict['jump_size'], network_dict['rf_size'], options.patch_size, dataset_dict['input_width'])
             ax_flat[i].axvline(x=se[0], color='k')
             ax_flat[i].axvline(x=se[1], color='k')
         elif i_real < data.shape[1] and i % 2 == 1:
@@ -217,7 +220,8 @@ def plot_class_distribution_full(options, dataset_dict, network_dict, sidx_dict)
 
     fig.legend(handles, labels, bbox_to_anchor=(
         0.5, 0.95), loc='upper center', ncol=np.min([8, len(patch_classes)]))
-    plt.show()
+
+    plt.close()
 
 
 def visualize_prototype_images(options, dataset_dict, network_dict, sidx_dict, prototype_adjusted_imgs):
@@ -268,7 +272,7 @@ def visualize_prototype_images(options, dataset_dict, network_dict, sidx_dict, p
             c = 'black'
             if sidx_dict['sidx_w'][pidx] > 0:
                 c = 'red'
-            if ((pidx if not options.full_build else get_proto(pidx, options.n_prototpyes)) // per_class) == sidx_dict['sidx_gt']:
+            if ((pidx if not options.full_build else get_proto(pidx, options.n_prototypes)) // per_class) == sidx_dict['sidx_gt']:
                 c = 'green'
             iAx.set_title('Pid: %s | Val: %s | Dis: %s | S: %s | E: %s' % (
                 pidx if not options.full_build else get_proto(pidx, options.n_prototypes), int(
@@ -312,5 +316,5 @@ def visualize_prototype_images(options, dataset_dict, network_dict, sidx_dict, p
     #             #dpi=300,
     #             bbox_inches='tight',
     #             pad_inches=0.1)
-    # plt.close()
-    plt.show()
+    plt.close()
+    #plt.show()
